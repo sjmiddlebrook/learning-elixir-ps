@@ -1,3 +1,5 @@
+require Logger
+
 defmodule Servy.Handler do
   def handle(request) do
     request
@@ -6,11 +8,18 @@ defmodule Servy.Handler do
     |> log
     |> route
     |> track
+    |> emojify
     |> format_response
   end
 
+  def emojify(%{status: 200} = conv) do
+    %{conv | resp_body: "😄\n" <> conv.resp_body <> "\n😄"}
+  end
+
+  def emojify(conv), do: conv
+
   def track(%{status: 404, path: path} = conv) do
-    IO.puts("Logging 404: #{path}")
+    Logger.warn("Logging warn 404: #{path}")
     conv
   end
 
@@ -18,6 +27,10 @@ defmodule Servy.Handler do
 
   def rewrite_path(%{path: "/wildlife"} = conv) do
     %{conv | path: "/wildthings"}
+  end
+
+  def rewrite_path(%{path: "/bears?id=" <> id} = conv) do
+    %{conv | path: "/bears/#{id}"}
   end
 
   def rewrite_path(conv), do: conv
@@ -49,8 +62,8 @@ defmodule Servy.Handler do
     %{conv | status: 403, resp_body: "Please don't delete Bear #{id}. Thank you"}
   end
 
-  def route(conv, _method, path) do
-    %{conv | status: 404, resp_body: "No #{path} here!"}
+  def route(conv) do
+    %{conv | status: 404, resp_body: "No #{conv.path} here!"}
   end
 
   def format_response(conv) do
@@ -115,6 +128,44 @@ IO.puts(response)
 
 request = """
 GET /wildlife HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
+response = Servy.Handler.handle(request)
+
+IO.puts(response)
+
+request = """
+GET /bears?id=1 HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
+response = Servy.Handler.handle(request)
+
+IO.puts(response)
+
+
+request = """
+GET /bears?id=2 HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
+response = Servy.Handler.handle(request)
+
+IO.puts(response)
+
+
+request = """
+GET /wrong HTTP/1.1
 Host: example.com
 User-Agent: ExampleBrowser/1.0
 Accept: */*
