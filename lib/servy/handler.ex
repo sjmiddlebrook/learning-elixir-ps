@@ -78,128 +78,128 @@ defmodule Servy.Handler do
 
 end
 
-request = """
-GET /wildthings HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
-response = Servy.Handler.handle(request)
-
-IO.puts(response)
-
-request = """
-GET /bears/23 HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
-response = Servy.Handler.handle(request)
-
-IO.puts(response)
-
-
-request = """
-DELETE /bears/1 HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
-response = Servy.Handler.handle(request)
-
-IO.puts(response)
-
-request = """
-GET /wildlife HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
-response = Servy.Handler.handle(request)
-
-IO.puts(response)
-
-request = """
-GET /bears?id=1 HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
-response = Servy.Handler.handle(request)
-
-IO.puts(response)
-
-
-request = """
-GET /bears?id=2 HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
-response = Servy.Handler.handle(request)
-
-IO.puts(response)
-
-
-request = """
-GET /wrong HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
-response = Servy.Handler.handle(request)
-
-IO.puts(response)
-
-request = """
-GET /pages/about HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
-response = Servy.Handler.handle(request)
-
-IO.puts(response)
-
-request = """
-GET /bears/new HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
-response = Servy.Handler.handle(request)
-
-IO.puts(response)
-
-request = """
-GET /pages/contact HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
-response = Servy.Handler.handle(request)
-
-IO.puts(response)
+#request = """
+#GET /wildthings HTTP/1.1
+#Host: example.com
+#User-Agent: ExampleBrowser/1.0
+#Accept: */*
+#
+#"""
+#
+#response = Servy.Handler.handle(request)
+#
+#IO.puts(response)
+#
+#request = """
+#GET /bears/23 HTTP/1.1
+#Host: example.com
+#User-Agent: ExampleBrowser/1.0
+#Accept: */*
+#
+#"""
+#
+#response = Servy.Handler.handle(request)
+#
+#IO.puts(response)
+#
+#
+#request = """
+#DELETE /bears/1 HTTP/1.1
+#Host: example.com
+#User-Agent: ExampleBrowser/1.0
+#Accept: */*
+#
+#"""
+#
+#response = Servy.Handler.handle(request)
+#
+#IO.puts(response)
+#
+#request = """
+#GET /wildlife HTTP/1.1
+#Host: example.com
+#User-Agent: ExampleBrowser/1.0
+#Accept: */*
+#
+#"""
+#
+#response = Servy.Handler.handle(request)
+#
+#IO.puts(response)
+#
+#request = """
+#GET /bears?id=1 HTTP/1.1
+#Host: example.com
+#User-Agent: ExampleBrowser/1.0
+#Accept: */*
+#
+#"""
+#
+#response = Servy.Handler.handle(request)
+#
+#IO.puts(response)
+#
+#
+#request = """
+#GET /bears?id=2 HTTP/1.1
+#Host: example.com
+#User-Agent: ExampleBrowser/1.0
+#Accept: */*
+#
+#"""
+#
+#response = Servy.Handler.handle(request)
+#
+#IO.puts(response)
+#
+#
+#request = """
+#GET /wrong HTTP/1.1
+#Host: example.com
+#User-Agent: ExampleBrowser/1.0
+#Accept: */*
+#
+#"""
+#
+#response = Servy.Handler.handle(request)
+#
+#IO.puts(response)
+#
+#request = """
+#GET /pages/about HTTP/1.1
+#Host: example.com
+#User-Agent: ExampleBrowser/1.0
+#Accept: */*
+#
+#"""
+#
+#response = Servy.Handler.handle(request)
+#
+#IO.puts(response)
+#
+#request = """
+#GET /bears/new HTTP/1.1
+#Host: example.com
+#User-Agent: ExampleBrowser/1.0
+#Accept: */*
+#
+#"""
+#
+#response = Servy.Handler.handle(request)
+#
+#IO.puts(response)
+#
+#request = """
+#GET /pages/contact HTTP/1.1
+#Host: example.com
+#User-Agent: ExampleBrowser/1.0
+#Accept: */*
+#
+#"""
+#
+#response = Servy.Handler.handle(request)
+#
+#IO.puts(response)
 
 
 request = """
@@ -211,6 +211,21 @@ Content-Type: application/x-www-form-urlencoded
 Content-Length: 21
 
 name=Jia Jia&type=Panda
+"""
+
+response = Servy.Handler.handle(request)
+
+IO.puts response
+
+request = """
+POST /bears HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+Content-Type: multipart/form-data
+Content-Length: 21
+
+name=Second&type=Try
 """
 
 response = Servy.Handler.handle(request)
