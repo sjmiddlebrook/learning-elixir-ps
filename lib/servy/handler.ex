@@ -10,6 +10,7 @@ defmodule Servy.Handler do
   import Servy.FileHandler, only: [handle_file: 2]
 
   alias Servy.Conv
+  alias Servy.BearController
 
   def handle(request) do
     request
@@ -33,7 +34,7 @@ defmodule Servy.Handler do
   end
 
   def route(%Conv{method: "GET", path: "/bears"} = conv) do
-    %{conv | status: 200, resp_body: "Teddy, Smokey, Paddington"}
+    BearController.index(conv)
   end
 
   def route(%Conv{method: "GET", path: "/bears/new"} = conv) do
@@ -44,11 +45,12 @@ defmodule Servy.Handler do
   end
 
   def route(%Conv{method: "GET", path: "/bears/" <> id} = conv) do
-    %{conv | status: 200, resp_body: "Bear #{id} has been found"}
+    params = Map.put(conv.params, "id", id)
+    BearController.show(conv, params)
   end
 
   def route(%Conv{method: "POST", path: "/bears"} = conv) do
-    %{conv | status: 201, resp_body: "Created a #{conv.params["type"]} bear named #{conv.params["name"]}!"}
+    BearController.create(conv, conv.params)
   end
 
   def route(%Conv{method: "GET", path: "/pages/" <> file_name} = conv) do
@@ -59,7 +61,8 @@ defmodule Servy.Handler do
   end
 
   def route(%Conv{method: "DELETE", path: "/bears/" <> id} = conv) do
-    %{conv | status: 403, resp_body: "Please don't delete Bear #{id}. Thank you"}
+    params = Map.put(conv.params, "id", id)
+    BearController.delete(conv, params)
   end
 
   def route(%Conv{} = conv) do
@@ -78,42 +81,6 @@ defmodule Servy.Handler do
 
 end
 
-#request = """
-#GET /wildthings HTTP/1.1
-#Host: example.com
-#User-Agent: ExampleBrowser/1.0
-#Accept: */*
-#
-#"""
-#
-#response = Servy.Handler.handle(request)
-#
-#IO.puts(response)
-#
-#request = """
-#GET /bears/23 HTTP/1.1
-#Host: example.com
-#User-Agent: ExampleBrowser/1.0
-#Accept: */*
-#
-#"""
-#
-#response = Servy.Handler.handle(request)
-#
-#IO.puts(response)
-#
-#
-#request = """
-#DELETE /bears/1 HTTP/1.1
-#Host: example.com
-#User-Agent: ExampleBrowser/1.0
-#Accept: */*
-#
-#"""
-#
-#response = Servy.Handler.handle(request)
-#
-#IO.puts(response)
 #
 #request = """
 #GET /wildlife HTTP/1.1
@@ -218,16 +185,38 @@ response = Servy.Handler.handle(request)
 IO.puts response
 
 request = """
-POST /bears HTTP/1.1
+GET /bears/2 HTTP/1.1
 Host: example.com
 User-Agent: ExampleBrowser/1.0
 Accept: */*
-Content-Type: multipart/form-data
-Content-Length: 21
 
-name=Second&type=Try
 """
 
 response = Servy.Handler.handle(request)
 
-IO.puts response
+IO.puts(response)
+
+request = """
+GET /bears HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
+response = Servy.Handler.handle(request)
+
+IO.puts(response)
+
+
+request = """
+DELETE /bears/1 HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
+response = Servy.Handler.handle(request)
+
+IO.puts(response)
