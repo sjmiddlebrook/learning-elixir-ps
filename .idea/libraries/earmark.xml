@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="earmark" type="mix">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/_build/test/lib/earmark/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/earmark/ebin" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/earmark/lib" />
+      <root url="file://$PROJECT_DIR$/deps/earmark/lib" />
+    </SOURCES>
+  </library>
+</component>

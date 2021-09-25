@@ -62,6 +62,14 @@ defmodule Servy.Handler do
     Servy.Api.BearController.create(conv, conv.params)
   end
 
+  def route(%Conv{method: "GET", path: "/pages/markdown/" <> file_name} = conv) do
+    @pages_path
+      |> Path.join("markdown/#{file_name}.md")
+      |> File.read
+      |> handle_file(conv)
+      |> markdown_to_html
+  end
+
   def route(%Conv{method: "GET", path: "/pages/" <> file_name} = conv) do
     @pages_path
       |> Path.join(file_name <> ".html")
@@ -76,6 +84,10 @@ defmodule Servy.Handler do
 
   def route(%Conv{} = conv) do
     %{conv | status: 404, resp_body: "No #{conv.path} here!"}
+  end
+
+  def markdown_to_html(%Conv{status: 200} = conv) do
+    %{ conv | resp_body: Earmark.as_html!(conv.resp_body) }
   end
 
   defp format_response_headers(conv) do
