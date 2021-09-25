@@ -19,6 +19,8 @@
       <excludeFolder url="file://$MODULE_DIR$/deps" />
       <excludeFolder url="file://$MODULE_DIR$/doc" />
       <excludeFolder url="file://$MODULE_DIR$/logs" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/jason" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/jason" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -29,5 +31,6 @@
     <orderEntry type="library" name="Elixir 1.12.3" level="application" />
     <orderEntry type="library" name="Elixir 1.12.3" level="application" />
     <orderEntry type="library" name="Elixir 1.12.3" level="application" />
+    <orderEntry type="library" name="jason" level="project" />
   </component>
 </module>

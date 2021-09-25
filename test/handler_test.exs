@@ -3,6 +3,37 @@ defmodule HandlerTest do
 
   import Servy.Handler, only: [handle: 1]
 
+  test "GET /api/bears" do
+    request = """
+    GET /api/bears HTTP/1.1\r
+    Host: example.com\r
+    User-Agent: ExampleBrowser/1.0\r
+    Accept: */*\r
+    \r
+    """
+
+    response = handle(request)
+
+    expected_response = """
+    HTTP/1.1 200 OK\r
+    Content-Type: application/json\r
+    Content-Length: 605\r
+    \r
+    [{"hibernating": true,  "id": 1,  "name": "Teddy",  "type": "Brown"},
+    {"hibernating": false,  "id": 2,  "name": "Smokey",  "type": "Black"},
+    {"hibernating": false,  "id": 3,  "name": "Paddington",  "type": "Brown"},
+    {"hibernating": true,  "id": 4,  "name": "Scarface",  "type": "Grizzly"},
+    {"hibernating": false,  "id": 5,  "name": "Snow",  "type": "Polar"},
+    {"hibernating": false,  "id": 6,  "name": "Brutus",  "type": "Grizzly"},
+    {"hibernating": true,  "id": 7,  "name": "Rosie",  "type": "Black"},
+    {"hibernating": false,  "id": 8,  "name": "Roscoe",  "type": "Panda"},
+    {"hibernating": true,  "id": 9,  "name": "Iceman",  "type": "Polar"},
+    {"hibernating": false,  "id": 10,  "name": "Kenai",  "type": "Grizzly"}]
+    """
+
+    assert remove_whitespace(response) == remove_whitespace(expected_response)
+  end
+
   test "GET /wildthings" do
     request = """
     GET /wildthings HTTP/1.1\r
