@@ -3,7 +3,7 @@ defmodule Servy.Conv do
             path: "",
             params: %{},
             headers: %{},
-            resp_content_type: "text/html",
+            resp_headers: %{"Content-Type" => "text/html"},
             resp_body: "",
             status: nil
 
@@ -20,5 +20,15 @@ defmodule Servy.Conv do
       404 => "Not Found",
       500 => "Internal Server Error"
     }[code]
+  end
+
+  def put_resp_content_type(conv, type) do
+    headers = Map.put(conv.resp_headers, "Content-Type", type)
+    %{ conv | resp_headers: headers }
+  end
+
+  def put_resp_content_length(conv) do
+    headers = Map.put(conv.resp_headers, "Content-Length", byte_size(conv.resp_body))
+    %{ conv | resp_headers: headers }
   end
 end

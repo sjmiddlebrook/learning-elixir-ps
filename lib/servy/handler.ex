@@ -8,6 +8,7 @@ defmodule Servy.Handler do
   import Servy.Plugins, only: [rewrite_path: 1, log: 1, track: 1]
   import Servy.Parser, only: [parse: 1]
   import Servy.FileHandler, only: [handle_file: 2]
+  import Servy.Conv, only: [put_resp_content_length: 1]
 
   alias Servy.Conv
   alias Servy.BearController
@@ -19,6 +20,7 @@ defmodule Servy.Handler do
     |> log
     |> route
     |> track
+    |> put_resp_content_length
     |> format_response
   end
 
@@ -56,6 +58,10 @@ defmodule Servy.Handler do
     BearController.create(conv, conv.params)
   end
 
+  def route(%Conv{method: "POST", path: "/api/bears"} = conv) do
+    Servy.Api.BearController.create(conv, conv.params)
+  end
+
   def route(%Conv{method: "GET", path: "/pages/" <> file_name} = conv) do
     @pages_path
       |> Path.join(file_name <> ".html")
@@ -72,11 +78,16 @@ defmodule Servy.Handler do
     %{conv | status: 404, resp_body: "No #{conv.path} here!"}
   end
 
+  defp format_response_headers(conv) do
+    for {key, value} <- conv.resp_headers do
+      "#{key}: #{value}\r"
+    end |> Enum.sort |> Enum.reverse |> Enum.join("\n")
+  end
+
   def format_response(conv) do
     """
     HTTP/1.1 #{Conv.full_status(conv)}\r
-    Content-Type: #{conv.resp_content_type}\r
-    Content-Length: #{byte_size(conv.resp_body)}\r
+    #{format_response_headers(conv)}
     \r
     #{conv.resp_body}
     """
