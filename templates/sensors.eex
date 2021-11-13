@@ -1,0 +1,15 @@
+<h1>Sensors</h1>
+
+<h2>Snapshots</h2>
+<ul>
+  <%= for snapshot <- snapshots do %>
+    <li><%= snapshot %></li>
+  <% end %>
+</ul>
+<h2>Trackers</h2>
+<ul>
+  <%= for tracker <- trackers do %>
+    <li><%= inspect tracker %></li>
+  <% end %>
+</ul>
+
