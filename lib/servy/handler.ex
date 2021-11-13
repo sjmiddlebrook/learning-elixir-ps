@@ -35,24 +35,23 @@ defmodule Servy.Handler do
     raise "Kaboom!"
   end
 
-  def route(%Conv{ method: "GET", path: "/snapshots" } = conv) do
-    parent = self() # the request-handling process, also called the caller sometimes
+  def route(%Conv{method: "GET", path: "/sensors"} = conv) do
+    task = Task.async(fn -> Servy.Tracker.get_location("bigfoot") end)
 
-    spawn(fn -> send(parent, {:result, VideoCam.get_snapshot("cam-1")}) end)
-    spawn(fn -> send(parent, {:result, VideoCam.get_snapshot("cam-2")}) end)
-    spawn(fn -> send(parent, {:result, VideoCam.get_snapshot("cam-3")}) end)
+    snapshots =
+      ["cam-1", "cam-2", "cam-3"]
+      |> Enum.map(&Task.async(fn -> VideoCam.get_snapshot(&1) end))
+      |> Enum.map(&Task.await(&1))
 
-    snapshot1 = receive do {:result, filename} -> filename end
-    snapshot2 = receive do {:result, filename} -> filename end
-    snapshot3 = receive do {:result, filename} -> filename end
+    where_is_bigfoot = Task.await(task)
 
-    snapshots = [snapshot1, snapshot2, snapshot3]
-
-    %{ conv | status: 200, resp_body: inspect snapshots}
+    %{conv | status: 200, resp_body: inspect {snapshots, where_is_bigfoot}}
   end
 
   def route(%Conv{method: "GET", path: "/hibernate/" <> time} = conv) do
-    time |> String.to_integer |> :timer.sleep
+    time
+    |> String.to_integer
+    |> :timer.sleep
 
     %{conv | status: 200, resp_body: "Awake!"}
   end
@@ -71,9 +70,9 @@ defmodule Servy.Handler do
 
   def route(%Conv{method: "GET", path: "/bears/new"} = conv) do
     @pages_path
-      |> Path.join("form.html")
-      |> File.read
-      |> handle_file(conv)
+    |> Path.join("form.html")
+    |> File.read
+    |> handle_file(conv)
   end
 
   def route(%Conv{method: "GET", path: "/bears/" <> id} = conv) do
@@ -91,17 +90,17 @@ defmodule Servy.Handler do
 
   def route(%Conv{method: "GET", path: "/pages/markdown/" <> file_name} = conv) do
     @pages_path
-      |> Path.join("markdown/#{file_name}.md")
-      |> File.read
-      |> handle_file(conv)
-      |> markdown_to_html
+    |> Path.join("markdown/#{file_name}.md")
+    |> File.read
+    |> handle_file(conv)
+    |> markdown_to_html
   end
 
   def route(%Conv{method: "GET", path: "/pages/" <> file_name} = conv) do
     @pages_path
-      |> Path.join(file_name <> ".html")
-      |> File.read
-      |> handle_file(conv)
+    |> Path.join(file_name <> ".html")
+    |> File.read
+    |> handle_file(conv)
   end
 
   def route(%Conv{method: "DELETE", path: "/bears/" <> id} = conv) do
@@ -114,13 +113,16 @@ defmodule Servy.Handler do
   end
 
   def markdown_to_html(%Conv{status: 200} = conv) do
-    %{ conv | resp_body: Earmark.as_html!(conv.resp_body) }
+    %{conv | resp_body: Earmark.as_html!(conv.resp_body)}
   end
 
   defp format_response_headers(conv) do
     for {key, value} <- conv.resp_headers do
       "#{key}: #{value}\r"
-    end |> Enum.sort |> Enum.reverse |> Enum.join("\n")
+    end
+    |> Enum.sort
+    |> Enum.reverse
+    |> Enum.join("\n")
   end
 
   def format_response(conv) do
