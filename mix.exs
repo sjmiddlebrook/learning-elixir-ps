@@ -22,7 +22,8 @@ defmodule Servy.MixProject do
   defp deps do
     [
       {:jason, "~> 1.2"},
-      {:earmark, "~> 1.4"}
+      {:earmark, "~> 1.4"},
+      {:httpoison, "~> 1.8"}
     ]
   end
 end
