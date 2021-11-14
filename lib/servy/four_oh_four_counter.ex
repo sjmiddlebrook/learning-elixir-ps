@@ -2,44 +2,50 @@ defmodule Servy.FourOhFourCounter do
 
   @name __MODULE__
 
-  alias Servy.GenericServer
+  use GenServer
 
   def start() do
-    GenericServer.start(__MODULE__, %{}, @name)
+    GenServer.start(__MODULE__, %{}, name: @name)
   end
 
   def bump_count(path) do
-    GenericServer.call(@name, {:add_count, path})
+    GenServer.call(@name, {:add_count, path})
   end
 
   def get_count(path) do
-    GenericServer.call(@name, {:get_count, path})
+    GenServer.call(@name, {:get_count, path})
   end
 
   def get_counts() do
-    GenericServer.call(@name, :get_counts)
+    GenServer.call(@name, :get_counts)
   end
 
   def reset() do
-    GenericServer.cast(@name, :reset)
+    GenServer.cast(@name, :reset)
   end
 
-  def handle_call({:add_count, path}, state) do
+  # Server Callbacks
+
+  def init(state) do
+    {:ok, state}
+  end
+
+  def handle_call({:add_count, path}, _from, state) do
     new_state = Map.update(state, path, 1, fn existing_value -> existing_value + 1 end)
-    {new_state, new_state}
+    {:reply, new_state, new_state}
   end
 
-  def handle_call({:get_count, path}, state) do
+  def handle_call({:get_count, path}, _from, state) do
     total = Map.get(state, path, 0)
-    {total, state}
+    {:reply, total, state}
   end
 
-  def handle_call(:get_counts, state) do
-    {state, state}
+  def handle_call(:get_counts, _from, state) do
+    {:reply, state, state}
   end
 
   def handle_cast(:reset, _state) do
-    %{}
+    {:noreply, %{}}
   end
 
 end
