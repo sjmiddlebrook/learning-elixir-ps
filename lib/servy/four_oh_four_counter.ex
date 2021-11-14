@@ -31,8 +31,8 @@ defmodule Servy.FourOhFourCounter do
   end
 
   def handle_call({:add_count, path}, _from, state) do
-    new_state = Map.update(state, path, 1, fn existing_value -> existing_value + 1 end)
-    {:reply, new_state, new_state}
+    new_state = Map.update(state, path, 1, &(&1 + 1))
+    {:reply, :ok, new_state}
   end
 
   def handle_call({:get_count, path}, _from, state) do
