@@ -45,6 +45,10 @@ defmodule Servy.Handler do
     Servy.PledgeController.index(conv)
   end
 
+  def route(%Conv{method: "GET", path: "/pledges/new"} = conv) do
+    Servy.PledgeController.new(conv)
+  end
+
   def route(%Conv{method: "GET", path: "/kaboom"}) do
     raise "Kaboom!"
   end
