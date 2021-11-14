@@ -48,7 +48,9 @@ defmodule Servy.PledgeServer do
   end
 
   def handle_cast({:set_cache_size, size}, state) do
-    {:noreply, %{state | cache_size: size}}
+    cached_pledges = Enum.take(state.pledges, size)
+    new_state = %{state | cache_size: size, pledges: cached_pledges}
+    {:noreply, new_state}
   end
 
   def handle_call(:total_pledged, _from, state) do
@@ -96,11 +98,12 @@ send(pid, {:stop, "random message to handle"})
 
 IO.inspect PledgeServer.create_pledge("larry", 10)
 PledgeServer.clear()
-PledgeServer.set_cache_size(4)
 IO.inspect PledgeServer.create_pledge("moe", 20)
 IO.inspect PledgeServer.create_pledge("curly", 30)
 IO.inspect PledgeServer.create_pledge("daisy", 40)
 IO.inspect PledgeServer.create_pledge("grace", 50)
+
+PledgeServer.set_cache_size(2)
 
 recent_pledges = PledgeServer.recent_pledges()
 IO.inspect recent_pledges
